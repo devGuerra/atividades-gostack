@@ -10,10 +10,10 @@ let count = 0;
 function checkProjectExists(req, res, next) {
   const { id } = req.params;
 
-  const project = projects.findIndex(p => p.id === id);
+  const project = projects.find(p => p.id === id);
 
-  if (project < 0) {
-    return res.status(400).json({ error: "Id is required" });
+  if (!project) {
+    return res.status(400).json({ error: "Project Not Found" });
   }
 
   return next();
@@ -35,7 +35,7 @@ server.post("/projects", countRequests, (req, res) => {
 
   projects.push({ id, title, tasks: [] });
 
-  return res.json(projects);
+  return res.json(project);
 });
 
 server.post(
@@ -62,7 +62,7 @@ server.put("/projects/:id", checkProjectExists, countRequests, (req, res) => {
 
   project.title = title;
 
-  return res.json(projects);
+  return res.json(project);
 });
 
 server.delete(
@@ -72,11 +72,11 @@ server.delete(
   (req, res) => {
     const { id } = req.params;
 
-    const project = projects.findIndex(p => p.id === id);
+    const projectIndex = projects.findIndex(p => p.id === id);
 
-    projects.splice(project, 1);
+    projects.splice(projectIndex, 1);
 
-    return res.json(projects);
+    return res.json();
   }
 );
 
